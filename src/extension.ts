@@ -67,6 +67,9 @@ function formatCloseList(state: any, token: string) {
 }
 
 function formatNewLine(state: any, token: string) {
+  if (state.arrayOpen) {
+    return state;
+  }
   // don't add another newline within an array
   if (state.newLine && state.array) {
     return state;
