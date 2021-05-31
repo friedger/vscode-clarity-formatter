@@ -1,8 +1,6 @@
-# vscode-lisp-formatter
+# vscode-clarity-formatter
 
-A quickly thrown together, minimal Common Lisp formatter for Visual Studio Code.
-
-This extension is avaiable on the [VisualStudio Marketplace](https://marketplace.visualstudio.com/items?itemName=imjacobclark.vscode-lisp-formatter).
+A quickly thrown together, minimal Clarity formatter for Visual Studio Code.
 
 ## Compiling
 
