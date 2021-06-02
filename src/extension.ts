@@ -17,7 +17,7 @@ function insertNewline(state: any, token: string) {
 }
 
 function indent(state: any) {
-  state.formattedDocument += " ".repeat(2).repeat(state.openLists);
+  state.formattedDocument += "\t".repeat(state.openLists);
   return state;
 }
 
@@ -87,7 +87,8 @@ function formatWhitespace(state: any, token: string) {
   const charIsInsideACommentStringOrArray =
     state.comment ||
     state.string ||
-    (state.array && !state.arrayOpen && !state.newLine);
+    (state.array && !state.arrayOpen && !state.newLine && !state.newColon) ||
+    (state.tuple && !state.tupleOpen && !state.newColon);
   if (charIsInsideACommentStringOrArray) {
     state.formattedDocument += token;
   }
@@ -134,6 +135,27 @@ function formatQuote(state: any, token: string) {
   return state;
 }
 
+function formatColon(state: any, token: string) {
+  state.newColon = true;
+  state.formattedDocument = state.formattedDocument.replace(/ +$/g, "");
+  state.formattedDocument += token;
+  return state;
+}
+
+function formatOpenTuple(state: any, token: string) {
+  state.tupleOpen = true;
+  state.openTuples++;
+  state.formattedDocument += token;
+  return state;
+}
+
+function formatCloseTuple(state: any, token: string) {
+  state.tutpleOpen = false;
+  state.openTuples--;
+  state.formattedDocument += token;
+  return state;
+}
+
 export function formatDocument(document: string) {
   let state = {
     document: document,
@@ -144,8 +166,12 @@ export function formatDocument(document: string) {
     escaped: false,
     string: false,
     newLine: false,
+    newColon: false,
     arrayOpen: false,
     array: false,
+    openTuples: 0,
+    tuple: false,
+    tupleOpen: false,
   };
 
   console.log({ state });
@@ -159,6 +185,9 @@ export function formatDocument(document: string) {
     ";": formatComment,
     "\\": formatEscape,
     '"': formatQuote,
+    ":": formatColon,
+    "{": formatOpenTuple,
+    "}": formatCloseTuple,
   };
 
   for (var i = 0; i < state.document.length; i++) {
@@ -171,9 +200,14 @@ export function formatDocument(document: string) {
       if (state.newLine && state.array) {
         state = indent(state);
       }
+      if (state.newColon) {
+        state.formattedDocument += " ";
+      }
       state.formattedDocument += cursor;
       state.arrayOpen = false;
+      state.tupleOpen = false;
       state.newLine = false;
+      state.newColon = false;
       if (state.escaped) {
         state.escaped = false;
       }
