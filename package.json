@@ -1,7 +1,7 @@
 {
   "name": "vscode-clarity-formatter",
   "description": "Clarity Formatter for VSCode",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "publisher": "friedger",
   "repository": "https://github.com/friedger/vscode-lisp-formatter",
   "engines": {
